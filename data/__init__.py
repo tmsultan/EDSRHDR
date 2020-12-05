@@ -1,5 +1,10 @@
 from importlib import import_module
 #from dataloader import MSDataLoader
+
+from IPython.core import debugger 
+breakpoint = debugger.set_trace
+
+# Import pytorch data structures
 from torch.utils.data import dataloader
 from torch.utils.data import ConcatDataset
 
@@ -16,6 +21,8 @@ class MyConcatDataset(ConcatDataset):
 class Data:
     def __init__(self, args):
         self.loader_train = None
+
+        # Go here if want to train
         if not args.test_only:
             datasets = []
             for d in args.data_train:
@@ -37,11 +44,24 @@ class Data:
                 m = import_module('data.benchmark')
                 testset = getattr(m, 'Benchmark')(args, train=False, name=d)
             else:
+
+                # GO here since data_test == 'Demo
                 module_name = d if d.find('DIV2K-Q') < 0 else 'DIV2KJPEG'
+
+                # It imports all the modules from the file in the directory corresponding to d
+                # here - d = demo.py --> imports files from src/data.py 
+                # Can also import from other files in directory e.g. common.py or div2k.py!
                 m = import_module('data.' + module_name.lower())
+                
+
+                # Assign to testset all attributes in demo.Demo class 
+                # testset type is data.demo.Demo
+                # passed into it we have the idx_scale and other args
                 testset = getattr(m, module_name)(args, train=False, name=d)
 
             self.loader_test.append(
+                # Call Data loader - Load demo data into data loader
+                # Built in pytorch function
                 dataloader.DataLoader(
                     testset,
                     batch_size=1,

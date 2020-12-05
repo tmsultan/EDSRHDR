@@ -20,6 +20,7 @@ import torch
 import torch.optim as optim
 import torch.optim.lr_scheduler as lrs
 from radiance_writer import *
+from plot_hist import *
 
 #import pydevd_pycharm
 #pydevd_pycharm.settrace('localhost', port=12345, stdoutToServer=True, stderrToServer=True)
@@ -143,6 +144,7 @@ class checkpoint():
 					filename, tensor = queue.get()
 					if filename is None: break
 					imageio.imwrite(filename, tensor.numpy())
+					
 		
 		self.process = [
 			Process(target=bg_target, args=(self.queue,)) \
@@ -167,23 +169,27 @@ class checkpoint():
 
 			postfix = ('SR', 'LR', 'HR')
 			for v, p in zip(save_list, postfix):
-				print(v[0])
+				#print(v[0])
 				#print(v.size())
 
-				hdr2_1 = v[0].mul(1 / self.args.rgb_range)
+				hdr2_1 = v[0].mul(255/ self.args.rgb_range).mul(1/(255*255)).mul(10)
 				hdr2_2 = hdr2_1.permute(1, 2, 0).cpu()
 				hdr2 = hdr2_2.squeeze(0)
+				#hdr2 = hdr2.numpy()
 				print(hdr2.size())
-				radiance_writer(hdr2, "output.HDR")
+				print( ('{}{}.hdr'.format(filename, p)))
+				radiance_writer(hdr2, ('{}{}.hdr'.format(filename, p)))
 				#cv2.imwrite("output24.exr", hdr2*255)
 				# print(self.args.rgb_range)
 				# Normalize to 255 range
+				# breakpoint()
+				#plot_hist(hdr2,  ('{}{}_hist.png'.format(filename, p)))
 				normalized = v[0].mul(255 / self.args.rgb_range)
-				#normalized = v[0]
 				tensor_cpu = normalized.byte().permute(1, 2, 0).cpu()
 				#radiance_writer(tensor_cpu.numpy(), "output2.HDR")
-				breakpoint()
-				self.queue.put(('{}{}.jpg'.format(filename, p), tensor_cpu))
+				#breakpoint()
+				#radiance_writer(tensor_cpu, ('{}{}.hdr'.format(filename, p)))
+				self.queue.put(('{}{}.png'.format(filename, p), tensor_cpu))
 
 	def save_results_3(self, dataset, filename, save_list, scale):
 		if self.args.save_results:
@@ -200,7 +206,10 @@ class checkpoint():
 
 def quantize(img, rgb_range):
 	pixel_range = 255 / rgb_range
-	return img.mul(pixel_range).clamp(0, 255).round().div(pixel_range)
+	return img.mul(pixel_range).div(pixel_range)
+	#return img.mul(pixel_range).clamp(0, 255).round().div(pixel_range)
+	#return img.mul(pixel_range).clamp(0, 255).round().div(pixel_range)
+
 
 def calc_psnr(sr, hr, scale, rgb_range, dataset=None):
 	if hr.nelement() == 1: return 0

@@ -3,6 +3,10 @@ import random
 import numpy as np
 import skimage.color as sc
 
+from IPython.core import debugger 
+breakpoint = debugger.set_trace
+
+
 import torch
 
 def get_patch(*args, patch_size=96, scale=2, multi=False, input_large=False):
@@ -35,7 +39,8 @@ def set_channel(*args, n_channels=3):
     def _set_channel(img):
         if img.ndim == 2:
             img = np.expand_dims(img, axis=2)
-
+        print('hello')
+        
         c = img.shape[2]
         if n_channels == 1 and c == 3:
             img = np.expand_dims(sc.rgb2ycbcr(img)[:, :, 0], 2)
@@ -47,9 +52,21 @@ def set_channel(*args, n_channels=3):
     return [_set_channel(a) for a in args]
 
 def np2Tensor(*args, rgb_range=255):
+#def np2Tensor(*args, rgb_range=args.rgb_range):
     def _np2Tensor(img):
-        np_transpose = np.ascontiguousarray(img.transpose((2, 0, 1)))
+
+        #print(type(img))
+        
+        # Tranpose color channels - cast as float 32
+        np_transpose = np.ascontiguousarray(img.transpose((2, 0, 1)), dtype=np.float32)
+
+        
+        # Create torch tensor
         tensor = torch.from_numpy(np_transpose).float()
+
+        
+        # Should update rgb_range - normalize to 1 to 255
+        # Currently not using rgb_range
         tensor.mul_(rgb_range / 255)
 
         return tensor

@@ -9,6 +9,8 @@ import cv2
 
 from tqdm import tqdm
 
+
+
 class VideoTester():
     def __init__(self, args, my_model, ckp):
         self.args = args

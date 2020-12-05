@@ -9,8 +9,13 @@ import imageio
 import torch
 import torch.utils.data as data
 
+from IPython.core import debugger 
+breakpoint = debugger.set_trace
+
+
 class Demo(data.Dataset):
     def __init__(self, args, name='Demo', train=False, benchmark=False):
+        
         self.args = args
         self.name = name
         self.scale = args.scale
@@ -26,11 +31,24 @@ class Demo(data.Dataset):
 
     def __getitem__(self, idx):
         filename = os.path.splitext(os.path.basename(self.filelist[idx]))[0]
-        #lr = imageio.imread(self.filelist[idx])
-        lr = cv2.imread(self.filelist[idx])
-        lr = cv2.cvtColor(lr,cv2.COLOR_BGR2RGB)
+        #
+
+        if '.hdr' in filename:
+            lr = cv2.imread(self.filelist[idx],  cv2.IMREAD_ANYDEPTH)
+            lr = cv2.cvtColor(lr,cv2.COLOR_BGR2RGB)
+        else:
+            lr = imageio.imread(self.filelist[idx])
+
+        #print(lr, "is of type", type(lr))
+        
+
         lr, = common.set_channel(lr, n_channels=self.args.n_colors)
+
+        
         lr_t, = common.np2Tensor(lr, rgb_range=self.args.rgb_range)
+
+        #print(lr_t, "is of type", type(lr))
+        #breakpoint()
 
         return lr_t, -1, filename
 

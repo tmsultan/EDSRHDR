@@ -9,6 +9,9 @@ import imageio
 import torch
 import torch.utils.data as data
 
+
+
+
 class Demo(data.Dataset):
     def __init__(self, args, name='Demo', train=False, benchmark=False):
         self.args = args
@@ -28,6 +31,7 @@ class Demo(data.Dataset):
         filename = os.path.splitext(os.path.basename(self.filelist[idx]))[0]
         #lr = imageio.imread(self.filelist[idx])
         lr = cv2.imread(self.filelist[idx])
+        
         lr, = common.set_channel(lr, n_channels=self.args.n_colors)
         lr_t, = common.np2Tensor(lr, rgb_range=self.args.rgb_range)
 

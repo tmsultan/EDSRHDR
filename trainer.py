@@ -72,6 +72,7 @@ class Trainer():
         self.optimizer.schedule()
 
     def test(self):
+        
         torch.set_grad_enabled(False)
 
         epoch = self.optimizer.get_last_epoch()
@@ -85,6 +86,7 @@ class Trainer():
         if self.args.save_results: self.ckp.begin_background()
         for idx_data, d in enumerate(self.loader_test):
             for idx_scale, scale in enumerate(self.scale):
+                breakpoint()
                 d.dataset.set_scale(idx_scale)
                 for lr, hr, filename in tqdm(d, ncols=80):
                     lr, hr = self.prepare(lr, hr)
