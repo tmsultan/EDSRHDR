@@ -25,20 +25,23 @@ class Demo(data.Dataset):
 
         self.filelist = []
         for f in os.listdir(args.dir_demo):
-            if f.find('.png') >= 0 or f.find('.jp') >= 0 or f.find('.hdr'):
+            if f.find('.png') >= 0 or f.find('.jpg') >= 0 or f.find('.hdr'):
                 self.filelist.append(os.path.join(args.dir_demo, f))
         self.filelist.sort()
 
     def __getitem__(self, idx):
+        
         filename = os.path.splitext(os.path.basename(self.filelist[idx]))[0]
-        #
+        
 
-        if '.hdr' in filename:
+        if '.hdr' in self.filelist[idx]:
             lr = cv2.imread(self.filelist[idx],  cv2.IMREAD_ANYDEPTH)
             lr = cv2.cvtColor(lr,cv2.COLOR_BGR2RGB)
+            self.args.rgb_range = np.max(lr)
         else:
             lr = imageio.imread(self.filelist[idx])
-
+            self.args.rgb_range = 255
+            #breakpoint()
         #print(lr, "is of type", type(lr))
         
 

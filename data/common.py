@@ -39,7 +39,7 @@ def set_channel(*args, n_channels=3):
     def _set_channel(img):
         if img.ndim == 2:
             img = np.expand_dims(img, axis=2)
-        print('hello')
+       
         
         c = img.shape[2]
         if n_channels == 1 and c == 3:
@@ -65,9 +65,11 @@ def np2Tensor(*args, rgb_range=255):
         tensor = torch.from_numpy(np_transpose).float()
 
         
-        # Should update rgb_range - normalize to 1 to 255
+        # Should update rgb_range - takes and image and scales by rgb_range
         # Currently not using rgb_range
         tensor.mul_(rgb_range / 255)
+
+        breakpoint()
 
         return tensor
 

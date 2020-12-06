@@ -171,8 +171,8 @@ class checkpoint():
 			for v, p in zip(save_list, postfix):
 				#print(v[0])
 				#print(v.size())
-
-				hdr2_1 = v[0].mul(255/ self.args.rgb_range).mul(1/(255*255)).mul(10)
+				#if '.hdr' in self.filelist[idx]:
+				hdr2_1 = v[0].mul(255/ self.args.rgb_range)
 				hdr2_2 = hdr2_1.permute(1, 2, 0).cpu()
 				hdr2 = hdr2_2.squeeze(0)
 				#hdr2 = hdr2.numpy()
@@ -205,9 +205,10 @@ class checkpoint():
 				self.queue.put(('{}{}.png'.format(filename, p), tensor_cpu))
 
 def quantize(img, rgb_range):
+	# Quantization makes sense if want to save png images - not hdr images
+
 	pixel_range = 255 / rgb_range
 	return img.mul(pixel_range).div(pixel_range)
-	#return img.mul(pixel_range).clamp(0, 255).round().div(pixel_range)
 	#return img.mul(pixel_range).clamp(0, 255).round().div(pixel_range)
 
 
