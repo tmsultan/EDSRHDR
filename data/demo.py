@@ -39,6 +39,8 @@ class Demo(data.Dataset):
             lr = cv2.cvtColor(lr,cv2.COLOR_BGR2RGB)
             #self.args.max_val = np.mean(lr)
             #lr = lr*(255/self.args.max_val)
+            #breakpoint()
+            #lr = lr/100000
             self.args.non_hdr = False
             self.args.rgb_range = np.max(lr)
             self.args.non_hdr
