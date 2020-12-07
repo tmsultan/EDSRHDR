@@ -208,8 +208,8 @@ def quantize(img, rgb_range):
 	# Quantization makes sense if want to save png images - not hdr images
 
 	pixel_range = 255 / rgb_range
-	return img.mul(pixel_range).div(pixel_range)
-	#return img.mul(pixel_range).clamp(0, 255).round().div(pixel_range)
+	#return img.mul(pixel_range).div(pixel_range)
+	return img.mul(pixel_range).clamp(0, 255).round().div(pixel_range)
 
 
 def calc_psnr(sr, hr, scale, rgb_range, dataset=None):

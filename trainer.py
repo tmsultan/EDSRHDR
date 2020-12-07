@@ -103,8 +103,15 @@ class Trainer():
                     # Go step by step here
                     # What is idx_scale?????
                     sr = self.model(lr, idx_scale)
-                    breakpoint()
-                    sr = utility.quantize(sr, self.args.rgb_range)
+                    #breakpoint()
+
+                    if self.args.non_hdr:
+                        breakpoint()
+                        sr = utility.quantize(sr, self.args.rgb_range)
+
+                    #breakpoint()
+                    # if self.args.maxval > 0
+                    #     sr = sr.mul()
 
                     save_list = [sr]
                     self.ckp.log[-1, idx_data, idx_scale] += utility.calc_psnr(
