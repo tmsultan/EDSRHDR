@@ -37,14 +37,16 @@ class Demo(data.Dataset):
         if '.hdr' in self.filelist[idx]:
             lr = cv2.imread(self.filelist[idx],  cv2.IMREAD_ANYDEPTH)
             lr = cv2.cvtColor(lr,cv2.COLOR_BGR2RGB)
+            self.args.maxval = np.max(lr)
             self.args.rgb_range = np.max(lr)
+            lr = lr
         else:
             lr = imageio.imread(self.filelist[idx])
             self.args.rgb_range = 255
             #breakpoint()
         #print(lr, "is of type", type(lr))
         
-
+        breakpoint()
         lr, = common.set_channel(lr, n_channels=self.args.n_colors)
 
         
