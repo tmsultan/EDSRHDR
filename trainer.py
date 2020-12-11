@@ -105,8 +105,7 @@ class Trainer():
                     sr = self.model(lr, idx_scale)
                     #breakpoint()
 
-                    if self.args.non_hdr:
-                        
+                    if self.args.non_hdr == True:
                         sr = utility.quantize(sr, self.args.rgb_range)
 
                     #breakpoint()

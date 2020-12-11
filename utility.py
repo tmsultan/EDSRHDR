@@ -189,8 +189,8 @@ class checkpoint():
 				#radiance_writer(tensor_cpu.numpy(), "output2.HDR")
 				#breakpoint()
 				#radiance_writer(tensor_cpu, ('{}{}.hdr'.format(filename, p)))
-				if self.args.non_hdr = True
-					self.queue.put(('{}{}.png'.format(filename, p), tensor_cpu))
+				#if self.args.non_hdr == True:
+				self.queue.put(('{}{}.png'.format(filename, p), tensor_cpu))
 
 	def save_results_3(self, dataset, filename, save_list, scale):
 		if self.args.save_results:

@@ -17,11 +17,14 @@ class Demo(data.Dataset):
     def __init__(self, args, name='Demo', train=False, benchmark=False):
         
         self.args = args
+        self.args.non_hdr = False
         self.name = name
         self.scale = args.scale
         self.idx_scale = 0
         self.train = False
         self.benchmark = benchmark
+        
+        #self.args.non_hdr = True
 
         self.filelist = []
         for f in os.listdir(args.dir_demo):
@@ -32,7 +35,7 @@ class Demo(data.Dataset):
     def __getitem__(self, idx):
         
         filename = os.path.splitext(os.path.basename(self.filelist[idx]))[0]
-        
+
 
         if '.hdr' in self.filelist[idx]:
             lr = cv2.imread(self.filelist[idx],  cv2.IMREAD_ANYDEPTH)
@@ -43,7 +46,6 @@ class Demo(data.Dataset):
             #lr = lr/100000
             self.args.non_hdr = False
             self.args.rgb_range = np.max(lr)
-            self.args.non_hdr
         else:
             lr = imageio.imread(self.filelist[idx])
             self.args.non_hdr = True
